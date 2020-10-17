@@ -2,12 +2,12 @@ import re
 from typing import Union, Pattern, Optional, AsyncGenerator, Dict
 
 from muggle.fork import Fork
-from muggle.http_exception import HttpException
 from muggle.mg.mg_fixed import MgFixed
 from muggle.muggle import Muggle
 from muggle.request import Request
 from muggle.response import Response
 from muggle.rs.rs_text import RsText
+from muggle.rs.rs_with_status import RsWithStatus
 
 
 class FkRegex(Fork):
@@ -32,9 +32,10 @@ class FkRegex(Fork):
 
 
 class ResponseForked(Response):
-    def __init__(self, fork: Fork, request: Request):
+    def __init__(self, fork: Fork, request: Request, fallback_response=RsWithStatus(404)):
         self._fork = fork
         self._rq = request
+        self._fb = fallback_response
         self._resp = None
 
     async def status(self) -> str:
@@ -48,8 +49,5 @@ class ResponseForked(Response):
 
     async def _response(self) -> Response:
         if self._resp is None:
-            resp = await self._fork.route(self._rq)
-            if resp is None:
-                raise HttpException(404)
-            self._resp = resp
+            self._resp = await self._fork.route(self._rq) or self._fb
         return self._resp
