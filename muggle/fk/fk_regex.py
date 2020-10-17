@@ -2,6 +2,7 @@ import re
 from typing import Union, Pattern, Optional, AsyncGenerator, Dict
 
 from muggle.fork import Fork
+from muggle.http_exception import HttpException
 from muggle.mg.mg_fixed import MgFixed
 from muggle.muggle import Muggle
 from muggle.request import Request
@@ -25,20 +26,30 @@ class FkRegex(Fork):
         else:
             raise TypeError("Expected Response, Muggle or str. Got: %r" % type(resp))
 
-    def route(self, request: Request) -> Optional[Response]:
-        if self._pattern.match(request.uri()):
+    async def route(self, request: Request) -> Optional[Response]:
+        if self._pattern.match(await request.uri()):
             return self._mg.act(request)
 
 
 class ResponseForked(Response):
-    def __init__(self, resp):
-        self._foo = fork
+    def __init__(self, fork: Fork, request: Request):
+        self._fork = fork
+        self._rq = request
+        self._resp = None
 
     async def status(self) -> str:
-        pass
+        return await (await self._response()).status()
 
     async def headers(self) -> Dict[str, str]:
-        pass
+        return await (await self._response()).headers()
 
     async def body(self) -> AsyncGenerator[bytes]:
-        pass
+        return await (await self._response()).body()
+
+    async def _response(self) -> Response:
+        if self._resp is None:
+            resp = await self._fork.route(self._rq)
+            if resp is None:
+                raise HttpException(404)
+            self._resp = resp
+        return self._resp

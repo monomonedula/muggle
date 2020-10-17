@@ -7,5 +7,5 @@ from muggle.response import Response
 
 class Fork(ABC):
     @abstractmethod
-    def route(self, request: Request) -> Optional[Response]:
+    async def route(self, request: Request) -> Optional[Response]:
         pass
