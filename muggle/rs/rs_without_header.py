@@ -10,7 +10,7 @@ class RsWithoutHeader(Response, metaclass=delegation_metaclass("_response")):
         self._response = resp
         self._header = header
 
-    def headers(self) -> Dict[str, str]:
+    async def headers(self) -> Dict[str, str]:
         headers = self._response.headers()
         if self._header in headers:
             del headers[self._header]

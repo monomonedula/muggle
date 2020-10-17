@@ -6,5 +6,5 @@ from muggle.headofrequest import HeadOfResponse
 
 class Response(HeadOfResponse, Body, ABC):
     @abstractmethod
-    def status(self) -> str:
+    async def status(self) -> str:
         pass

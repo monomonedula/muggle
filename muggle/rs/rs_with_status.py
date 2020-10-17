@@ -16,5 +16,5 @@ class RsWithStatus(Response, metaclass=delegation_metaclass("_response")):
         self._reason = reason or self._codes[status]
         self._response = response or RsEmpty()
 
-    def status(self) -> str:
+    async def status(self) -> str:
         return f"{self._status} {self._reason}"

@@ -1,4 +1,4 @@
-from typing import Dict, BinaryIO
+from typing import AsyncGenerator
 
 from abc_delegation import delegation_metaclass
 
@@ -14,5 +14,5 @@ class RsWithBody(Response, metaclass=delegation_metaclass("_response")):
         self._response = response
         self._body = body
 
-    def body(self) -> BinaryIO:
-        return self._body.body()
+    async def body(self) -> AsyncGenerator[bytes]:
+        return await self._body.body()

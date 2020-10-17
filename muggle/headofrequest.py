@@ -4,21 +4,21 @@ from typing import Dict
 
 class HeadOfResponse(ABC):
     @abstractmethod
-    def headers(self) -> Dict[str, str]:
+    async def headers(self) -> Dict[str, str]:
         pass
 
 
 class HeadOfRequest(ABC):
     @abstractmethod
-    def headers(self) -> Dict[str, str]:
+    async def headers(self) -> Dict[str, str]:
         pass
 
     @abstractmethod
-    def uri(self) -> str:
+    async def uri(self) -> str:
         pass
 
     @abstractmethod
-    def method(self) -> str:
+    async def method(self) -> str:
         pass
 
 
@@ -28,11 +28,11 @@ class SimpleHeadOfRequest(HeadOfRequest):
         self._uri = uri
         self._method = method
 
-    def headers(self) -> Dict[str, str]:
+    async def headers(self) -> Dict[str, str]:
         return self._headers.copy()
 
-    def uri(self) -> str:
+    async def uri(self) -> str:
         return self._uri
 
-    def method(self) -> str:
+    async def method(self) -> str:
         return self._method

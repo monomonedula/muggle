@@ -1,15 +1,16 @@
-import io
-from typing import Dict, BinaryIO
+from typing import Dict, AsyncGenerator
 
 from muggle.response import Response
 
 
 class RsEmpty(Response):
-    def status(self) -> str:
+    async def status(self) -> str:
         return "204 No Content"
 
-    def headers(self) -> Dict[str, str]:
+    async def headers(self) -> Dict[str, str]:
         return {}
 
-    def body(self) -> BinaryIO:
-        return io.BytesIO()
+    async def body(self) -> AsyncGenerator[bytes]:
+        return
+        # noinspection PyUnreachableCode
+        yield

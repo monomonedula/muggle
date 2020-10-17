@@ -1,5 +1,5 @@
 import re
-from typing import Union, Pattern, Optional
+from typing import Union, Pattern, Optional, AsyncGenerator, Dict
 
 from muggle.fork import Fork
 from muggle.mg.mg_fixed import MgFixed
@@ -28,3 +28,17 @@ class FkRegex(Fork):
     def route(self, request: Request) -> Optional[Response]:
         if self._pattern.match(request.uri()):
             return self._mg.act(request)
+
+
+class ResponseForked(Response):
+    def __init__(self, resp):
+        self._foo = fork
+
+    async def status(self) -> str:
+        pass
+
+    async def headers(self) -> Dict[str, str]:
+        pass
+
+    async def body(self) -> AsyncGenerator[bytes]:
+        pass

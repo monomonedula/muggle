@@ -11,7 +11,7 @@ class RsWithHeader(Response, metaclass=delegation_metaclass("_response")):
         self._header = header
         self._value = value
 
-    def headers(self) -> Dict[str, str]:
-        headers = self._response.headers()
+    async def headers(self) -> Dict[str, str]:
+        headers = await self._response.headers()
         headers[self._header] = self._value
         return headers
