@@ -1,4 +1,4 @@
-from typing import Union, TextIO
+from typing import Union, TextIO, Optional
 
 from abc_delegation import delegation_metaclass
 
@@ -10,9 +10,10 @@ from muggle.rs.rs_with_type import RsWithType
 
 
 class RsText(Response, metaclass=delegation_metaclass("_response")):
-    def __init__(self, text: Union[str, bytes, TextIO] = "", response=None):
-        if not response:
+    def __init__(self, text: Union[str, bytes, TextIO] = "", response: Optional[Response] = None):
+        response: Response
+        if response is None:
             response = RsWithStatus(200)
         if text:
-            response = RsWithBody(TextBody(text))
-        self._response = RsWithType(response, "text/plain")
+            response = RsWithBody(TextBody(text), response)
+        self._response: Response = RsWithType(response, "text/plain")

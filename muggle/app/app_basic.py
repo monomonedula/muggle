@@ -1,7 +1,5 @@
-import webob
-
-from muggle.body import BinaryBody, BodyFromASGI
-from muggle.headofrequest import SimpleHeadOfRequest
+from muggle.body import BodyFromASGI
+from muggle.headrq import SimpleHeadRq
 from muggle.http_exception import HttpException
 from muggle.muggle import Muggle
 from muggle.rq.rq_of import RqOf
@@ -10,29 +8,13 @@ from muggle.rs.rs_with_status import RsWithStatus
 
 class AppBasic:
     def __init__(self, muggle: Muggle):
-        self._muggle = muggle
-
-    def __call__(self, environ, start_response):
-        rq = webob.Request(environ)
-        try:
-            response = self._muggle.act(
-                RqOf(SimpleHeadOfRequest(rq.headers.items(), environ["RAW_URI"], rq.method), BinaryBody(rq.body_file))
-            )
-        except HttpException as e:
-            response = RsWithStatus(e.code())
-        start_response(response.status(), headers=response.headers().items())
-        return iter(response.body())
-
-
-class AppBasic2:
-    def __init__(self, muggle: Muggle):
-        self._muggle = muggle
+        self._muggle: Muggle = muggle
 
     async def __call__(self, scope, receive, send):
         try:
             response = self._muggle.act(
                 RqOf(
-                    SimpleHeadOfRequest(
+                    SimpleHeadRq(
                         headers(scope), scope["path"], scope["method"]
                     ),
                     BodyFromASGI(receive)
@@ -43,8 +25,8 @@ class AppBasic2:
         await send(
             {
                 "type": "http.response.start",
-                "status": await response.status(),
-                "headers": await response.headers(),
+                "status": await response.status().value(),
+                "headers": await response.headers().value(),
             }
         )
         async for body_chunk in response.body():

@@ -1,11 +1,11 @@
 import io
 from abc import ABC, abstractmethod
-from typing import TextIO, Union, BinaryIO, AsyncGenerator
+from typing import TextIO, Union, BinaryIO, AsyncIterator
 
 
 class Body(ABC):
     @abstractmethod
-    async def body(self) -> AsyncGenerator[bytes]:
+    def body(self) -> AsyncIterator[bytes]:
         pass
 
 
@@ -21,7 +21,7 @@ class TextBody(Body):
             raise TypeError("Expected Union[str, bytes, TextIO] got %r" % type(text))
         self._body = body
 
-    async def body(self) -> AsyncGenerator[bytes]:
+    async def body(self) -> AsyncIterator[bytes]:
         yield self._body()
 
 
@@ -29,7 +29,7 @@ class BinaryBody(Body):
     def __init__(self, body: BinaryIO):
         self._body = body
 
-    async def body(self) -> AsyncGenerator[bytes]:
+    async def body(self) -> AsyncIterator[bytes]:
         yield self._body.read()
 
 
@@ -37,7 +37,7 @@ class BodyFromASGI(Body):
     def __init__(self, receive):
         self._receive = receive
 
-    async def body(self) -> AsyncGenerator[bytes]:
+    async def body(self) -> AsyncIterator[bytes]:
         more_body = True
         while more_body:
             message = await self._receive()

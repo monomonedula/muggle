@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 
 from muggle.body import Body
-from muggle.headofrequest import HeadOfResponse
+from muggle.headrq import HeadRs
+from muggle.primitives.scalar import Scalar
 
 
-class Response(HeadOfResponse, Body, ABC):
+class Response(HeadRs, Body, ABC):
     @abstractmethod
-    async def status(self) -> str:
+    def status(self) -> Scalar[str]:
         pass

@@ -6,5 +6,5 @@ from muggle.response import Response
 
 class Muggle(ABC):
     @abstractmethod
-    def act(self, request: "Request") -> "Response":
+    def act(self, request: Request) -> Response:
         pass

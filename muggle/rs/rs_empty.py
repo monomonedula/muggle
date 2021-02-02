@@ -1,16 +1,17 @@
-from typing import Dict, AsyncGenerator
+from typing import Dict, AsyncIterator
 
+from muggle.primitives.scalar import Scalar, scalar
 from muggle.response import Response
 
 
 class RsEmpty(Response):
-    async def status(self) -> str:
-        return "204 No Content"
+    def status(self) -> Scalar[str]:
+        return scalar("204 No Content")
 
-    async def headers(self) -> Dict[str, str]:
-        return {}
+    def headers(self) -> Scalar[Dict[str, str]]:
+        return scalar({})
 
-    async def body(self) -> AsyncGenerator[bytes]:
+    async def body(self) -> AsyncIterator[bytes]:
         return
         # noinspection PyUnreachableCode
-        yield
+        yield b""

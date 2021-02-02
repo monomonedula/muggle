@@ -7,10 +7,10 @@ from muggle.response import Response
 
 class MgFork(Muggle):
     def __init__(self, fork: Fork):
-        self._fork = fork
+        self._fork: Fork = fork
 
-    def act(self, request: "Request") -> "Response":
-        response = self._fork.route(request)
+    def act(self, request: Request) -> Response:
+        response: Response = await self._fork.route(request)
         if response:
             return response
         raise HttpException(404)

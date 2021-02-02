@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncIterator, Optional
 
 from abc_delegation import delegation_metaclass
 
@@ -8,11 +8,11 @@ from muggle.rs.rs_with_status import RsWithStatus
 
 
 class RsWithBody(Response, metaclass=delegation_metaclass("_response")):
-    def __init__(self, body: Body, response: Response = None):
+    def __init__(self, body: Body, response: Optional[Response] = None):
         if response is None:
             response = RsWithStatus(200)
-        self._response = response
-        self._body = body
+        self._response: Response = response
+        self._body: Body = body
 
-    async def body(self) -> AsyncGenerator[bytes]:
-        return await self._body.body()
+    def body(self) -> AsyncIterator[bytes]:
+        return self._body.body()

@@ -1,17 +1,22 @@
-from typing import Dict
+from typing import Dict, Union
 
 from abc_delegation import delegation_metaclass
 
+from muggle.primitives.scalar import Scalar, scalar
 from muggle.response import Response
+from muggle.rs.rs_with_header import AlteredHeaders
 
 
-class RsWithoutHeader(Response, metaclass=delegation_metaclass("_response")):
-    def __init__(self, resp: Response, header: str):
+class RsWithoutHeaders(Response, metaclass=delegation_metaclass("_response")):
+    def __init__(self, resp: Response, headers: Union[Dict[str, str], Scalar[Dict[str, str]]]):
         self._response = resp
-        self._header = header
+        if isinstance(headers, Scalar):
+            self._headers = headers
+        else:
+            self._headers = scalar(headers)
 
-    async def headers(self) -> Dict[str, str]:
-        headers = self._response.headers()
-        if self._header in headers:
-            del headers[self._header]
-        return headers
+    def headers(self) -> Scalar[Dict[str, str]]:
+        return AlteredHeaders(
+            self._response.headers(),
+            to_remove=self._headers
+        )

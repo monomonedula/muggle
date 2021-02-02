@@ -1,8 +1,8 @@
 from abc import ABC
 
 from muggle.body import Body
-from muggle.headofrequest import HeadOfRequest
+from muggle.headrq import HeadRq
 
 
-class Request(HeadOfRequest, Body, ABC):
+class Request(HeadRq, Body, ABC):
     pass
