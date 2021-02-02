@@ -10,7 +10,9 @@ from muggle.rs.rs_with_type import RsWithType
 
 
 class RsText(Response, metaclass=delegation_metaclass("_response")):
-    def __init__(self, text: Union[str, bytes, TextIO] = "", response: Optional[Response] = None):
+    def __init__(
+        self, text: Union[str, bytes, TextIO] = "", response: Optional[Response] = None
+    ):
         response: Response
         if response is None:
             response = RsWithStatus(200)

@@ -1,15 +1,14 @@
 from typing import Dict, AsyncIterator
 
-from muggle.primitives.scalar import Scalar, scalar
 from muggle.response import Response
 
 
 class RsEmpty(Response):
-    def status(self) -> Scalar[str]:
-        return scalar("204 No Content")
+    async def status(self) -> str:
+        return "204 No Content"
 
-    def headers(self) -> Scalar[Dict[str, str]]:
-        return scalar({})
+    async def headers(self) -> Dict[str, str]:
+        return {}
 
     async def body(self) -> AsyncIterator[bytes]:
         return

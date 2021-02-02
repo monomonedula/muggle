@@ -41,8 +41,8 @@ class BodyFromASGI(Body):
         more_body = True
         while more_body:
             message = await self._receive()
-            yield message.get('body', b'')
-            more_body = message.get('more_body', False)
+            yield message.get("body", b"")
+            more_body = message.get("more_body", False)
 
 
 class BytesIOWrapper(io.BufferedReader):

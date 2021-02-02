@@ -1,10 +1,9 @@
 import re
-from typing import Union, Pattern, Optional, Dict, AsyncIterator, TypeVar, Awaitable, Callable
+from typing import Union, Pattern, Optional, Dict, AsyncIterator
 
 from muggle.fork import Fork
 from muggle.mg.mg_fixed import MgFixed
 from muggle.muggle import Muggle
-from muggle.primitives.scalar import Scalar
 from muggle.request import Request
 from muggle.response import Response
 from muggle.rs.rs_text import RsText
@@ -18,6 +17,7 @@ class FkRegex(Fork):
         self._pattern = (
             pattern if isinstance(pattern, re.Pattern) else re.compile(pattern)
         )
+        self._mg: Muggle
         if isinstance(resp, str):
             self._mg = MgFixed(RsText(resp))
         elif isinstance(resp, Response):
@@ -28,26 +28,29 @@ class FkRegex(Fork):
             raise TypeError("Expected Response, Muggle or str. Got: %r" % type(resp))
 
     async def route(self, request: Request) -> Optional[Response]:
-        if self._pattern.match(await request.uri().value()):
-            return self._mg.act(request)
+        if self._pattern.match(await request.uri()):
+            return await self._mg.act(request)
 
 
 class ResponseForked(Response):
-    def __init__(self, fork: Fork, request: Request, fallback_response=RsWithStatus(404)):
-        self._fork = fork
-        self._rq = request
-        self._fb = fallback_response
-        self._resp = None
+    def __init__(
+        self,
+        fork: Fork,
+        request: Request,
+        fallback_response: Response = RsWithStatus(404),
+    ):
+        self._fork: Fork = fork
+        self._rq: Request = request
+        self._fb: Response = fallback_response
+        self._resp: Optional[Response] = None
 
-    def status(self) -> Scalar[str]:
-        return ScalarOfCoro(
-            lambda: _call_method(self._response, "status")
-        )
+    async def status(self) -> str:
+        resp = await self._response()
+        return await resp.status()
 
-    def headers(self) -> Scalar[Dict[str, str]]:
-        return ScalarOfCoro(
-            lambda: _call_method(self._response, "headers")
-        )
+    async def headers(self) -> Dict[str, str]:
+        resp = await self._response()
+        return await resp.headers()
 
     async def body(self) -> AsyncIterator[bytes]:
         async for chunk in (await self._response()).body():
@@ -57,18 +60,3 @@ class ResponseForked(Response):
         if self._resp is None:
             self._resp = await self._fork.route(self._rq) or self._fb
         return self._resp
-
-
-async def _call_method(get_obj: Callable[[], Awaitable[Response]], method_name: str):
-    return getattr((await get_obj()), method_name)()
-
-
-T = TypeVar('T')
-
-
-class ScalarOfCoro(Scalar[T]):
-    def __init__(self, get_value: Callable[[], Awaitable[T]]):
-        self.__value: Callable[[], Awaitable[T]] = get_value
-
-    async def value(self) -> T:
-        return await self.__value()

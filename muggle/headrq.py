@@ -1,26 +1,24 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from muggle.primitives.scalar import Scalar, scalar
-
 
 class HeadRs(ABC):
     @abstractmethod
-    def headers(self) -> Scalar[Dict[str, str]]:
+    async def headers(self) -> Dict[str, str]:
         pass
 
 
 class HeadRq(ABC):
     @abstractmethod
-    def headers(self) -> Scalar[Dict[str, str]]:
+    async def headers(self) -> Dict[str, str]:
         pass
 
     @abstractmethod
-    def uri(self) -> Scalar[str]:
+    async def uri(self) -> str:
         pass
 
     @abstractmethod
-    def method(self) -> Scalar[str]:
+    async def method(self) -> str:
         pass
 
 
@@ -30,11 +28,11 @@ class SimpleHeadRq(HeadRq):
         self._uri: str = uri
         self._method: str = method
 
-    def headers(self) -> Scalar[Dict[str, str]]:
-        return scalar(self._headers.copy())
+    async def headers(self) -> Dict[str, str]:
+        return self._headers.copy()
 
-    def uri(self) -> Scalar[str]:
-        return scalar(self._uri)
+    async def uri(self) -> str:
+        return self._uri
 
-    def method(self) -> Scalar[str]:
-        return scalar(self._method)
+    async def method(self) -> str:
+        return self._method

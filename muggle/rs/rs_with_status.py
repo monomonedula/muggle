@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 from abc_delegation import delegation_metaclass
 
-from muggle.primitives.scalar import Scalar, scalar
 from muggle.response import Response
 from muggle.rs.rs_empty import RsEmpty
 
@@ -17,5 +16,5 @@ class RsWithStatus(Response, metaclass=delegation_metaclass("_response")):
         self._reason = reason or self._codes[status]
         self._response = response or RsEmpty()
 
-    def status(self) -> Scalar[str]:
-        return scalar(f"{self._status} {self._reason}")
+    async def status(self) -> str:
+        return f"{self._status} {self._reason}"

@@ -5,7 +5,7 @@ from muggle.response import Response
 
 class MgFixed(Muggle):
     def __init__(self, resp: Response):
-        self._response = resp
+        self._response: Response = resp
 
-    def act(self, request: "Request") -> "Response":
+    async def act(self, request: "Request") -> "Response":
         return self._response

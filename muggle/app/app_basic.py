@@ -2,6 +2,7 @@ from muggle.body import BodyFromASGI
 from muggle.headrq import SimpleHeadRq
 from muggle.http_exception import HttpException
 from muggle.muggle import Muggle
+from muggle.response import Response
 from muggle.rq.rq_of import RqOf
 from muggle.rs.rs_with_status import RsWithStatus
 
@@ -12,30 +13,34 @@ class AppBasic:
 
     async def __call__(self, scope, receive, send):
         try:
-            response = self._muggle.act(
-                RqOf(
-                    SimpleHeadRq(
-                        headers(scope), scope["path"], scope["method"]
-                    ),
-                    BodyFromASGI(receive)
-                )
+            await _respond(
+                await self._muggle.act(
+                    RqOf(
+                        SimpleHeadRq(headers(scope), scope["path"], scope["method"]),
+                        BodyFromASGI(receive),
+                    )
+                ),
+                send,
             )
         except HttpException as e:
-            response = RsWithStatus(e.code())
+            await _respond(RsWithStatus(e.code()), send)
+
+
+async def _respond(response: Response, send):
+    await send(
+        {
+            "type": "http.response.start",
+            "status": await response.status(),
+            "headers": await response.headers(),
+        }
+    )
+    async for body_chunk in response.body():
         await send(
             {
-                "type": "http.response.start",
-                "status": await response.status().value(),
-                "headers": await response.headers().value(),
+                "type": "http.response.body",
+                "body": body_chunk,
             }
         )
-        async for body_chunk in response.body():
-            await send(
-                {
-                    "type": "http.response.body",
-                    "body": body_chunk,
-                }
-            )
 
 
 def headers(scope):
