@@ -19,7 +19,9 @@ class AppBasic:
                 await self._muggle.act(
                     RqOf(
                         SimpleHeadRq(
-                            CIMultiDictProxy(CIMultiDict(scope["headers"])), scope["path"], scope["method"]
+                            CIMultiDictProxy(CIMultiDict(scope["headers"])),
+                            scope["path"],
+                            scope["method"],
                         ),
                         BodyFromASGI(receive),
                     )

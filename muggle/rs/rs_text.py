@@ -17,6 +17,4 @@ class RsText(RsWrap):
             response = RsWithStatus(200)
         if text:
             response = RsWithBody(TextBody(text), response)
-        super(RsText, self).__init__(
-            RsWithType(response, "text/plain")
-        )
+        super(RsText, self).__init__(RsWithType(response, "text/plain"))

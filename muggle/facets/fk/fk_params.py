@@ -16,7 +16,13 @@ class FkParams(Fork):
 
     This class is immutable and thread safe.
     """
-    def __init__(self, param: str, pattern: Union[str, Pattern], resp: Union[Muggle, Response, str]):
+
+    def __init__(
+        self,
+        param: str,
+        pattern: Union[str, Pattern],
+        resp: Union[Muggle, Response, str],
+    ):
         self._param: str = param
         self._pattern: Pattern = (
             pattern if isinstance(pattern, re.Pattern) else re.compile(pattern)

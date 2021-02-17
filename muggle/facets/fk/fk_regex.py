@@ -18,6 +18,7 @@ class FkRegex(Fork):
 
     This class is immutable and coroutine-safe.
     """
+
     def __init__(
         self, pattern: Union[str, Pattern], *, resp: Union[Muggle, Response, str]
     ):

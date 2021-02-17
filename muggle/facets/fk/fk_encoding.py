@@ -16,17 +16,17 @@ class FkEncoding(Fork):
         self._encoding: str = encoding
 
     async def route(self, request: Request) -> Optional[Response]:
-        headers: Optional[List[str]] = (await request.headers()).getall("accept-encoding")
+        headers: Optional[List[str]] = (await request.headers()).getall(
+            "accept-encoding"
+        )
         response: Optional[Response] = None
         if not headers:
             response = await self._mg.act(request)
         elif self._encoding and self._encoding in [
-            enc for enc, priority in
-            chain.from_iterable(
-                parse_accept_header(val)
-                for val in headers
+            enc
+            for enc, priority in chain.from_iterable(
+                parse_accept_header(val) for val in headers
             )
         ]:
             response = await self._mg.act(request)
         return response
-

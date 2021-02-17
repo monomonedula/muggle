@@ -24,7 +24,5 @@ class FkContentType(Fork):
                 parse_accept_header(val, MIMEAccept)
                 for val in headers.getall("Content-Type", ["*/*"])
             )
-        ).best_match(
-            self._ctypes
-        ):
+        ).best_match(self._ctypes):
             return await self._mg.act(request)

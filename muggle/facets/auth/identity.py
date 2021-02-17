@@ -30,7 +30,9 @@ ANONYMOUS = _Anonymous()
 class IdentitySimple(Identity):
     def __init__(self, urn: str, props: Mapping[str, str] = None):
         self._name: str = urn
-        self._props: Mapping[str, str] = props if props is not None else MappingProxyType({})
+        self._props: Mapping[str, str] = (
+            props if props is not None else MappingProxyType({})
+        )
 
     async def urn(self) -> str:
         return self._name

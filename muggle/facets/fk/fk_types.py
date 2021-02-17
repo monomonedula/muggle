@@ -33,7 +33,5 @@ class FkTypes(Fork):
                 parse_accept_header(val, MIMEAccept)
                 for val in headers.getall("Accept", ["text/html"])
             )
-        ).best_match(
-            self._types
-        ):
+        ).best_match(self._types):
             return await self._mg.act(request)

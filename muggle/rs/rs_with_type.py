@@ -9,8 +9,8 @@ class RsWithType(RsWrap):
     def __init__(self, response: Response, type_: str, charset: Optional[str] = None):
         super(RsWithType, self).__init__(
             RsWithHeaders(response, {"Content-Type": type_})
-            if charset is None else
-            RsWithHeaders(
+            if charset is None
+            else RsWithHeaders(
                 response, {"Content-Type": f"{type_}; charset={charset}"}
             )
         )

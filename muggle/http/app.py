@@ -6,5 +6,5 @@ App = Callable[
         Callable[[], Awaitable[Dict[str, Any]]],
         Callable[[Dict[str, Any]], Awaitable[None]],
     ],
-    Awaitable[None]
+    Awaitable[None],
 ]

@@ -9,10 +9,7 @@ class CcPlain(Codec):
     async def encode(self, identity: Identity) -> bytes:
         parts = [
             await identity.urn(),
-            *[
-                f";{key}={quote(value)}"
-                for key, value in await identity.properties()
-            ]
+            *[f";{key}={quote(value)}" for key, value in await identity.properties()],
         ]
         return "".join(parts).encode()
 
@@ -22,7 +19,4 @@ class CcPlain(Codec):
         for p in parts[1:]:
             k, v = p.split("=")
             props[k] = unquote(v)
-        return IdentitySimple(
-            unquote(parts[0]),
-            props
-        )
+        return IdentitySimple(unquote(parts[0]), props)

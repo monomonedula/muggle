@@ -32,8 +32,8 @@ class MgAuth(Muggle):
         return await self._pass.exit(
             self._mg.act(
                 RqWithoutHeaders(request, [self._header])
-                if identity is ANONYMOUS else
-                RqWithAuth(
+                if identity is ANONYMOUS
+                else RqWithAuth(
                     identity=identity,
                     header=self._header,
                     rq=RqWithoutHeaders(request, [self._header]),
@@ -43,16 +43,20 @@ class MgAuth(Muggle):
 
 
 class RqWithAuth(RqWrap):
-    def __init__(self, identity: Union[str, Identity], rq: Request, header: str = MgAuth.__class__.__name__):
-        self._identity: Identity = IdentitySimple(urn=identity) if isinstance(identity, str) else identity
+    def __init__(
+        self,
+        identity: Union[str, Identity],
+        rq: Request,
+        header: str = MgAuth.__class__.__name__,
+    ):
+        self._identity: Identity = (
+            IdentitySimple(urn=identity) if isinstance(identity, str) else identity
+        )
         self._rq: Request = rq
         self._header: str = header
         super(RqWithAuth, self).__init__(rq)
 
     async def headers(self) -> MultiMapping[str, str]:
         return await RqWithHeaders(
-            self._rq,
-            {
-                self._header: (await CcPlain().encode(self._identity)).decode()
-            }
+            self._rq, {self._header: (await CcPlain().encode(self._identity)).decode()}
         ).headers()
