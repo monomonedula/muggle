@@ -16,5 +16,6 @@ class RsWithoutHeaders(RsWrap):
         headers: MultiMapping[str, str] = await self._response.headers()
         new_headers: MultiDict[str, str] = MultiDict(headers)
         for h in self._headers:
-            del new_headers[h]
+            if h in new_headers:
+                del new_headers[h]
         return new_headers
