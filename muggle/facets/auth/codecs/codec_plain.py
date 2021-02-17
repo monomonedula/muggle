@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict
+from typing import List, Dict
 from urllib.parse import quote, unquote
 
 from muggle.facets.auth.codecs.codec import Codec
