@@ -1,15 +1,16 @@
 from typing import Dict
 
-from abc_delegation import delegation_metaclass
 from multidict import MultiMapping, MultiDict
 
 from muggle.response import Response
+from muggle.rs.rs_wrap import RsWrap
 
 
-class RsWithHeaders(Response, metaclass=delegation_metaclass("_response")):
+class RsWithHeaders(RsWrap):
     def __init__(self, resp: Response, headers: Dict[str, str]):
         self._response: Response = resp
         self._headers: Dict[str, str] = headers
+        super(RsWithHeaders, self).__init__(resp)
 
     async def headers(self) -> MultiMapping[str, str]:
         headers: MultiMapping[str, str] = await self._response.headers()

@@ -1,17 +1,16 @@
 from typing import Optional
 
-from abc_delegation import delegation_metaclass
-
 from muggle.response import Response
 from muggle.rs.rs_with_header import RsWithHeaders
+from muggle.rs.rs_wrap import RsWrap
 
 
-class RsWithType(Response, metaclass=delegation_metaclass("_response")):
+class RsWithType(RsWrap):
     def __init__(self, response: Response, type_: str, charset: Optional[str] = None):
-        if charset is None:
-            response = RsWithHeaders(response, {"Content-Type": type_})
-        else:
-            response = RsWithHeaders(
+        super(RsWithType, self).__init__(
+            RsWithHeaders(response, {"Content-Type": type_})
+            if charset is None else
+            RsWithHeaders(
                 response, {"Content-Type": f"{type_}; charset={charset}"}
             )
-        self._response: Response = response
+        )
