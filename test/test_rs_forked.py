@@ -1,18 +1,20 @@
-from typing import Optional, AsyncIterator, Dict
+from typing import AsyncIterator, Dict
+from urllib.parse import urlparse, ParseResult
 
-from muggle.fk.fk_regex import ResponseForked, FkRegex
-from muggle.fork import Fork
+from multidict import MultiMapping, MultiDict
+
+from muggle.facets.fk.fk_regex import ResponseForked, FkRegex
+from muggle.facets.fk.mg_fork import MgFork
 from muggle.request import Request
-from muggle.response import Response
 from muggle.rs.rs_text import RsText
 
 
 class FakeRequest(Request):
-    async def headers(self) -> Dict[str, str]:
-        return {"Foo": "bar"}
+    async def headers(self) -> MultiMapping[str, str]:
+        return MultiDict({"Foo": "bar"})
 
-    async def uri(self) -> str:
-        return "/hello-world?foo=bar"
+    async def uri(self) -> ParseResult:
+        return urlparse("/hello-world?foo=bar")
 
     async def method(self) -> str:
         return "GET"
@@ -23,7 +25,7 @@ class FakeRequest(Request):
 
 
 async def test_rs_forked():
-    ResponseForked(
+    MgFork(
         FkRegex(pattern="/foo-bar", resp=RsText(text="foo-bar")),
         FkRegex(pattern="/foo-bar", resp=RsText(text="foo-bar")),
     )

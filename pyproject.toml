@@ -9,6 +9,8 @@ license = "MIT"
 python = "^3.7"
 webob = "^1.8.6"
 abc-delegation = "^0.3.1"
+multidict = "^5.1.0"
+werkzeug = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

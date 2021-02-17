@@ -1,3 +1,5 @@
+from multidict import CIMultiDict, CIMultiDictProxy
+
 from muggle.body import BodyFromASGI
 from muggle.headrq import SimpleHeadRq
 from muggle.http_exception import HttpException
@@ -16,7 +18,9 @@ class AppBasic:
             await _respond(
                 await self._muggle.act(
                     RqOf(
-                        SimpleHeadRq(headers(scope), scope["path"], scope["method"]),
+                        SimpleHeadRq(
+                            CIMultiDictProxy(CIMultiDict(scope["headers"])), scope["path"], scope["method"]
+                        ),
                         BodyFromASGI(receive),
                     )
                 ),
@@ -41,7 +45,3 @@ async def _respond(response: Response, send):
                 "body": body_chunk,
             }
         )
-
-
-def headers(scope):
-    return {name: value for name, value in scope["headers"]}

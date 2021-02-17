@@ -1,4 +1,7 @@
-from typing import Dict, AsyncIterator
+from typing import AsyncIterator
+from urllib.parse import ParseResult
+
+from multidict import MultiMapping
 
 from muggle.body import Body
 from muggle.headrq import HeadRq
@@ -10,13 +13,13 @@ class RqOf(Request):
         self._body: Body = body
         self._head: HeadRq = head
 
-    async def headers(self) -> Dict[str, str]:
+    async def headers(self) -> MultiMapping[str, str]:
         return await self._head.headers()
 
     def body(self) -> AsyncIterator[bytes]:
         return self._body.body()
 
-    async def uri(self) -> str:
+    async def uri(self) -> ParseResult:
         return await self._head.uri()
 
     async def method(self) -> str:

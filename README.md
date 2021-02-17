@@ -9,10 +9,11 @@ This work is heavily inspired by the [Takes](https://github.com/yegor256/takes) 
 ### Quick sample app
 
 Create file `app.py` with the following content:
+
 ```python
-from muggle.app.app_basic import AppBasic
-from muggle.fk.fk_regex import FkRegex
-from muggle.mg.mg_fork import MgFork
+from muggle.http.app_basic import AppBasic
+from muggle.facets.fk.fk_regex import FkRegex
+from muggle.facets.fk.mg_fork import MgFork
 
 app = AppBasic(
     MgFork(

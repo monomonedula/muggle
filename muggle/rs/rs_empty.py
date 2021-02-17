@@ -1,4 +1,6 @@
-from typing import Dict, AsyncIterator
+from typing import AsyncIterator
+
+from multidict import MultiMapping, MultiDict
 
 from muggle.response import Response
 
@@ -7,8 +9,8 @@ class RsEmpty(Response):
     async def status(self) -> str:
         return "204 No Content"
 
-    async def headers(self) -> Dict[str, str]:
-        return {}
+    async def headers(self) -> MultiMapping[str, str]:
+        return MultiDict()
 
     async def body(self) -> AsyncIterator[bytes]:
         return
