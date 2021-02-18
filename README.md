@@ -1,5 +1,5 @@
 ## Muggle | No magic
-An experimental WSGI-compatible object-oriented web framework for Python.
+An experimental ASGI-compatible object-oriented web framework for Python.
 Under development.
 
 This work is heavily inspired by the [Takes](https://github.com/yegor256/takes) framework for Java.
@@ -22,9 +22,9 @@ app = AppBasic(
 )
 ```
 
-Run it with a WSGI HTTP Server (Gunicorn, uWSGI, etc.):
+Run it with an ASGI HTTP Server (Uvicorn, Hypercorn, Daphne, etc.):
 ```
-gunicorn app:app
+uvicorn app:app
 ```
 
 Visit `http://127.0.0.1:8000/home` in your browser.
