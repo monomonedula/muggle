@@ -1,15 +1,18 @@
-import io
-from typing import Dict, BinaryIO
+from typing import AsyncIterator
+
+from multidict import MultiMapping, MultiDict
 
 from muggle.response import Response
 
 
 class RsEmpty(Response):
-    def status(self) -> str:
+    async def status(self) -> str:
         return "204 No Content"
 
-    def headers(self) -> Dict[str, str]:
-        return {}
+    async def headers(self) -> MultiMapping[str, str]:
+        return MultiDict()
 
-    def body(self) -> BinaryIO:
-        return io.BytesIO()
+    async def body(self) -> AsyncIterator[bytes]:
+        return
+        # noinspection PyUnreachableCode
+        yield b""

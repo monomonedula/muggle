@@ -1,17 +1,20 @@
 from typing import Dict
 
-from abc_delegation import delegation_metaclass
+from multidict import MultiMapping, CIMultiDict, CIMultiDictProxy
 
 from muggle.response import Response
+from muggle.rs.rs_wrap import RsWrap
 
 
-class RsWithHeader(Response, metaclass=delegation_metaclass("_response")):
-    def __init__(self, resp: Response, header: str, value: str):
-        self._response = resp
-        self._header = header
-        self._value = value
+class RsWithHeaders(RsWrap):
+    def __init__(self, resp: Response, headers: Dict[str, str]):
+        self._response: Response = resp
+        self._headers: Dict[str, str] = headers
+        super(RsWithHeaders, self).__init__(resp)
 
-    def headers(self) -> Dict[str, str]:
-        headers = self._response.headers()
-        headers[self._header] = self._value
-        return headers
+    async def headers(self) -> MultiMapping[str, str]:
+        headers: MultiMapping[str, str] = await self._response.headers()
+        new_headers: CIMultiDict[str, str] = CIMultiDict(headers)
+        for h, v in self._headers.items():
+            new_headers.add(h, v)
+        return CIMultiDictProxy(new_headers)

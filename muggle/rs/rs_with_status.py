@@ -1,12 +1,11 @@
 from http import HTTPStatus
 
-from abc_delegation import delegation_metaclass
-
 from muggle.response import Response
 from muggle.rs.rs_empty import RsEmpty
+from muggle.rs.rs_wrap import RsWrap
 
 
-class RsWithStatus(Response, metaclass=delegation_metaclass("_response")):
+class RsWithStatus(RsWrap):
     _codes = {code.value: code.phrase for code in HTTPStatus}
 
     def __init__(self, status, reason: str = None, response: Response = None):
@@ -14,7 +13,7 @@ class RsWithStatus(Response, metaclass=delegation_metaclass("_response")):
             raise TypeError("Bad status code: %r" % status)
         self._status = status
         self._reason = reason or self._codes[status]
-        self._response = response or RsEmpty()
+        super(RsWithStatus, self).__init__(RsEmpty() if response is None else response)
 
-    def status(self) -> str:
+    async def status(self) -> str:
         return f"{self._status} {self._reason}"
