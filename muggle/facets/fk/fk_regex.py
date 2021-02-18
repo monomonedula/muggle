@@ -38,33 +38,3 @@ class FkRegex(Fork):
     async def route(self, request: Request) -> Optional[Response]:
         if self._pattern.match((await request.uri()).path):
             return await self._mg.act(request)
-
-
-class ResponseForked(Response):
-    def __init__(
-        self,
-        fork: Fork,
-        request: Request,
-        fallback_response: Response = RsWithStatus(404),
-    ):
-        self._fork: Fork = fork
-        self._rq: Request = request
-        self._fb: Response = fallback_response
-        self._resp: Optional[Response] = None
-
-    async def status(self) -> str:
-        resp = await self._response()
-        return await resp.status()
-
-    async def headers(self) -> MultiMapping[str, str]:
-        resp = await self._response()
-        return await resp.headers()
-
-    async def body(self) -> AsyncIterator[bytes]:
-        async for chunk in (await self._response()).body():
-            yield chunk
-
-    async def _response(self) -> Response:
-        if self._resp is None:
-            self._resp = await self._fork.route(self._rq) or self._fb
-        return self._resp
