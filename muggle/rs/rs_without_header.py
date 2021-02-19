@@ -1,6 +1,7 @@
 from typing import Collection
 
-from multidict import MultiMapping, MultiDict
+
+from multidict import MultiMapping, CIMultiDict, CIMultiDictProxy
 
 from muggle.response import Response
 from muggle.rs.rs_wrap import RsWrap
@@ -14,8 +15,8 @@ class RsWithoutHeaders(RsWrap):
 
     async def headers(self) -> MultiMapping[str]:
         headers: MultiMapping[str] = await self._response.headers()
-        new_headers: MultiDict[str] = MultiDict(headers)
+        new_headers: CIMultiDict[str] = CIMultiDict(headers)
         for h in self._headers:
             if h in new_headers:
                 del new_headers[h]
-        return new_headers
+        return CIMultiDictProxy(new_headers)
