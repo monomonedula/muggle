@@ -27,7 +27,7 @@ class FakeRequest(Request):
         self._headers: Mapping[str, str] = headers
         self._body: Optional[bytes] = body
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return CIMultiDictProxy(CIMultiDict(self._headers))
 
     async def uri(self) -> ParseResult:

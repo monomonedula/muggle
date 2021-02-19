@@ -10,6 +10,7 @@ install:
 script:
   - black --check -v muggle/ test/
   - flake8 --ignore E501 muggle/ test/
+  - mypy .
   - pytest --cov muggle/ --cov-report xml
 after_success:
   - bash <(curl -s https://codecov.io/bash)
