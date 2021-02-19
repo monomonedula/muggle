@@ -12,9 +12,9 @@ class RsFake(Response):
         headers: MultiMapping[str] = CIMultiDictProxy(CIMultiDict()),
         body: Optional[bytes] = None,
     ):
-        self._status: status = status
+        self._status: str = status
         self._headers: MultiMapping[str] = headers
-        self._body: bytes = body
+        self._body: Optional[bytes] = body
 
     async def status(self) -> str:
         return self._status
@@ -22,6 +22,7 @@ class RsFake(Response):
     async def headers(self) -> MultiMapping[str]:
         return self._headers
 
-    def body(self) -> AsyncIterator[bytes]:
-        if self._body is not None:
-            yield self._body
+    async def body(self) -> AsyncIterator[bytes]:
+        if self._body is None:
+            return
+        yield self._body
