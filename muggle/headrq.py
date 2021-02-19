@@ -6,13 +6,13 @@ from multidict import MultiMapping
 
 class HeadRs(ABC):
     @abstractmethod
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         pass
 
 
 class HeadRq(ABC):
     @abstractmethod
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         pass
 
     @abstractmethod
@@ -25,12 +25,12 @@ class HeadRq(ABC):
 
 
 class SimpleHeadRq(HeadRq):
-    def __init__(self, headers: MultiMapping[str, str], uri="/", method="GET"):
-        self._headers: MultiMapping[str, str] = headers
+    def __init__(self, headers: MultiMapping[str], uri="/", method="GET"):
+        self._headers: MultiMapping[str] = headers
         self._uri: str = uri
         self._method: str = method
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return self._headers
 
     async def uri(self) -> ParseResult:

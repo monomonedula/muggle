@@ -30,7 +30,7 @@ class MgAuth(Muggle):
 
     async def act_identified(self, request: Request, identity: Identity) -> Response:
         return await self._pass.exit(
-            self._mg.act(
+            await self._mg.act(
                 RqWithoutHeaders(request, [self._header])
                 if identity is ANONYMOUS
                 else RqWithAuth(
@@ -56,7 +56,7 @@ class RqWithAuth(RqWrap):
         self._header: str = header
         super(RqWithAuth, self).__init__(rq)
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return await RqWithHeaders(
             self._rq, {self._header: (await CcPlain().encode(self._identity)).decode()}
         ).headers()

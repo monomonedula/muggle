@@ -1,6 +1,6 @@
 import io
 from abc import ABC, abstractmethod
-from typing import TextIO, Union, BinaryIO, AsyncIterator
+from typing import TextIO, Union, BinaryIO, AsyncIterator, Callable, cast
 
 
 class Body(ABC):
@@ -11,12 +11,22 @@ class Body(ABC):
 
 class TextBody(Body):
     def __init__(self, text: Union[str, bytes, TextIO]):
+        body: Callable[[], bytes]
         if isinstance(text, str):
-            body = lambda: text.encode()
+
+            def body() -> bytes:
+                return cast(str, text).encode()
+
         elif isinstance(text, bytes):
-            body = lambda: text
+
+            def body() -> bytes:
+                return cast(bytes, text)
+
         elif isinstance(text, io.TextIOBase):
-            body = lambda: BytesIOWrapper(text).read()
+
+            def body() -> bytes:
+                return BytesIOWrapper(text).read()
+
         else:
             raise TypeError("Expected Union[str, bytes, TextIO] got %r" % type(text))
         self._body = body

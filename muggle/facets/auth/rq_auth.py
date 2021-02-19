@@ -18,5 +18,5 @@ class RqAuth(RqWrap):
         if header_value is None:
             user = ANONYMOUS
         else:
-            user = await CcPlain().decode(header_value)
+            user = await CcPlain().decode(header_value.encode())
         return user

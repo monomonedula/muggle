@@ -27,7 +27,7 @@ class FkTypes(Fork):
             raise TypeError("Expected Response, Muggle or str. Got: %r" % type(resp))
 
     async def route(self, request: Request) -> Optional[Response]:
-        headers: MultiMapping[str, str] = await request.headers()
+        headers: MultiMapping[str] = await request.headers()
         if MIMEAccept(
             chain.from_iterable(
                 parse_accept_header(val, MIMEAccept)
@@ -35,3 +35,4 @@ class FkTypes(Fork):
             )
         ).best_match(self._types):
             return await self._mg.act(request)
+        return None
