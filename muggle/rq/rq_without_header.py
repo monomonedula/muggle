@@ -1,6 +1,6 @@
 from collections import Collection
 
-from multidict import MultiMapping, MultiDict
+from multidict import MultiMapping, CIMultiDict, CIMultiDictProxy
 
 from muggle.request import Request
 from muggle.rq.rq_wrap import RqWrap
@@ -14,8 +14,8 @@ class RqWithoutHeaders(RqWrap):
 
     async def headers(self) -> MultiMapping[str]:
         headers: MultiMapping[str] = await self._rq.headers()
-        new_headers: MultiDict[str] = MultiDict(headers)
+        new_headers: CIMultiDict[str] = CIMultiDict(headers)
         for h in self._headers:
             if h in new_headers:
                 del new_headers[h]
-        return new_headers
+        return CIMultiDictProxy(new_headers)
