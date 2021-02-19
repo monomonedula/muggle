@@ -1,4 +1,4 @@
-from collections import Collection
+from typing import Collection
 
 from multidict import MultiMapping, CIMultiDict, CIMultiDictProxy
 
