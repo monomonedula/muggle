@@ -12,9 +12,9 @@ class RsWithoutHeaders(RsWrap):
         self._headers: Collection[str] = removed_headers
         super(RsWithoutHeaders, self).__init__(resp)
 
-    async def headers(self) -> MultiMapping[str, str]:
-        headers: MultiMapping[str, str] = await self._response.headers()
-        new_headers: MultiDict[str, str] = MultiDict(headers)
+    async def headers(self) -> MultiMapping[str]:
+        headers: MultiMapping[str] = await self._response.headers()
+        new_headers: MultiDict[str] = MultiDict(headers)
         for h in self._headers:
             if h in new_headers:
                 del new_headers[h]

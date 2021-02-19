@@ -21,3 +21,4 @@ class FkMethods(Fork):
     async def route(self, request: Request) -> Optional[Response]:
         if await request.method() in self._methods:
             return await self._mg.act(request)
+        return None

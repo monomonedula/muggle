@@ -15,7 +15,7 @@ class Identity(ABC):
 
 class _Anonymous(Identity):
     async def urn(self) -> str:
-        return NotImplementedError
+        raise NotImplementedError
 
     async def properties(self) -> Mapping[str, str]:
         raise NotImplementedError

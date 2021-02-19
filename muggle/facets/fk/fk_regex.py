@@ -1,7 +1,5 @@
 import re
-from typing import Union, Pattern, Optional, Dict, AsyncIterator
-
-from multidict import MultiMapping
+from typing import Union, Pattern, Optional
 
 from muggle.fork import Fork
 from muggle.mg.mg_fixed import MgFixed
@@ -9,7 +7,6 @@ from muggle.muggle import Muggle
 from muggle.request import Request
 from muggle.response import Response
 from muggle.rs.rs_text import RsText
-from muggle.rs.rs_with_status import RsWithStatus
 
 
 class FkRegex(Fork):
@@ -38,3 +35,4 @@ class FkRegex(Fork):
     async def route(self, request: Request) -> Optional[Response]:
         if self._pattern.match((await request.uri()).path):
             return await self._mg.act(request)
+        return None

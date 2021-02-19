@@ -10,7 +10,7 @@ class RqWrap(Request):
     def __init__(self, rq: Request):
         self.__origin = rq
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return await self.__origin.headers()
 
     async def uri(self) -> ParseResult:

@@ -12,7 +12,6 @@ class RsText(RsWrap):
     def __init__(
         self, text: Union[str, bytes, TextIO] = "", response: Optional[Response] = None
     ):
-        response: Response
         if response is None:
             response = RsWithStatus(200)
         if text:

@@ -1,6 +1,6 @@
 import re
 from typing import Optional, Union, Pattern
-from urllib.parse import urlparse, parse_qsl
+from urllib.parse import parse_qsl
 
 from muggle.fork import Fork
 from muggle.mg.mg_fixed import MgFixed
@@ -41,3 +41,4 @@ class FkParams(Fork):
         for param, value in parse_qsl((await request.uri()).query):
             if param == self._param and self._pattern.match(value):
                 return await self._mg.act(request)
+        return None

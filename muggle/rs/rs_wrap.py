@@ -12,7 +12,7 @@ class RsWrap(Response):
     async def status(self) -> str:
         return await self.__origin.status()
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return await self.__origin.headers()
 
     def body(self) -> AsyncIterator[bytes]:

@@ -18,7 +18,7 @@ class FkContentType(Fork):
         self._ctypes: Collection[str] = types
 
     async def route(self, request: Request) -> Optional[Response]:
-        headers: MultiMapping[str, str] = await request.headers()
+        headers: MultiMapping[str] = await request.headers()
         if MIMEAccept(
             chain.from_iterable(
                 parse_accept_header(val, MIMEAccept)
@@ -26,3 +26,4 @@ class FkContentType(Fork):
             )
         ).best_match(self._ctypes):
             return await self._mg.act(request)
+        return None

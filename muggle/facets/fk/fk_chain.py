@@ -11,6 +11,7 @@ class FkChain(Fork):
 
     async def route(self, request: Request) -> Optional[Response]:
         for fork in self._forks:
-            rs = fork.route(request)
+            rs = await fork.route(request)
             if rs is not None:
                 return rs
+        return None

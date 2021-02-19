@@ -4,7 +4,7 @@ from typing import AsyncIterator, Mapping, Optional
 from urllib.parse import urlparse, ParseResult
 
 import pytest
-from multidict import MultiMapping
+from multidict import MultiMapping, CIMultiDict, CIMultiDictProxy
 
 from muggle.facets.fk.fk_regex import FkRegex
 from muggle.facets.fk.mg_fork import MgFork
@@ -15,15 +15,20 @@ from muggle.rs.rs_text import RsText
 
 
 class FakeRequest(Request):
-    def __init__(self, url: str = "/hello-world?foo=bar", method: str = "GET",
-                 headers: Mapping[str, str] = MappingProxyType({"Foo": "bar"}), body: Optional[bytes] = None):
+    def __init__(
+        self,
+        url: str = "/hello-world?foo=bar",
+        method: str = "GET",
+        headers: Mapping[str, str] = MappingProxyType({"Foo": "bar"}),
+        body: Optional[bytes] = None,
+    ):
         self._url: str = url
         self._method: str = method
         self._headers: Mapping[str, str] = headers
         self._body: Optional[bytes] = body
 
     async def headers(self) -> MultiMapping[str, str]:
-        return self._headers
+        return CIMultiDictProxy(CIMultiDict(self._headers))
 
     async def uri(self) -> ParseResult:
         return urlparse(self._url)
@@ -37,7 +42,9 @@ class FakeRequest(Request):
         yield self._body
 
     def __repr__(self):
-        return f"FakeRequest[{self._url}, {self._method}, {self._headers}, {self._body}]"
+        return (
+            f"FakeRequest[{self._url}, {self._method}, {self._headers}, {self._body}]"
+        )
 
 
 @pytest.mark.asyncio
@@ -48,7 +55,7 @@ class FakeRequest(Request):
         [FakeRequest("/hello-world"), RsText(text="resp2")],
         [FakeRequest("/hello-friend"), RsText(text="resp3")],
         [FakeRequest("/bang7"), RsText(text="resp4")],
-    ]
+    ],
 )
 async def test_mg_fork_with_fk_regex(rq, expected_response):
     resp: Optional[Response] = await MgFork(
@@ -62,7 +69,9 @@ async def test_mg_fork_with_fk_regex(rq, expected_response):
         assert resp is None
     else:
         assert resp is not None
-        assert await resp.body().__anext__() == await expected_response.body().__anext__()
+        assert (
+            await resp.body().__anext__() == await expected_response.body().__anext__()
+        )
         assert await resp.status() == await expected_response.status()
         assert await resp.headers() == await expected_response.headers()
 
@@ -73,7 +82,7 @@ async def test_mg_fork_with_fk_regex(rq, expected_response):
     [
         FakeRequest("/some-unexpected-path"),
         FakeRequest("hello-world"),
-    ]
+    ],
 )
 async def test_mg_fork_raises(rq):
     with pytest.raises(HttpException) as e:

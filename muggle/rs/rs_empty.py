@@ -9,7 +9,7 @@ class RsEmpty(Response):
     async def status(self) -> str:
         return "204 No Content"
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return MultiDict()
 
     async def body(self) -> AsyncIterator[bytes]:

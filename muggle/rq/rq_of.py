@@ -13,7 +13,7 @@ class RqOf(Request):
         self._body: Body = body
         self._head: HeadRq = head
 
-    async def headers(self) -> MultiMapping[str, str]:
+    async def headers(self) -> MultiMapping[str]:
         return await self._head.headers()
 
     def body(self) -> AsyncIterator[bytes]:
