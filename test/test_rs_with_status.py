@@ -18,7 +18,7 @@ async def test_rs_with_status_reason():
 
 
 @pytest.mark.parametrize("status", [99, 0, -10, 1000])
-def test_rs_with_status_reason(status):
+def test_rs_with_status_bad_status(status):
     with pytest.raises(TypeError):
         RsWithStatus(status)
 
