@@ -23,7 +23,13 @@ async def test_rs_with_type_headers_delete_previous():
     assert await RsWithType(
         RsFake(
             "201 CREATED",
-            CIMultiDict({"foo": "bar", "accept": "some-value", "CONTENT-TYPE": "application/json"}),
+            CIMultiDict(
+                {
+                    "foo": "bar",
+                    "accept": "some-value",
+                    "CONTENT-TYPE": "application/json",
+                }
+            ),
         ),
         type_="text/html",
     ).headers() == CIMultiDict(
