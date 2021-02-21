@@ -19,6 +19,25 @@ async def test_rs_with_type_headers():
 
 
 @pytest.mark.asyncio
+async def test_rs_with_type_headers_delete_previous():
+    assert await RsWithType(
+        RsFake(
+            "201 CREATED",
+            CIMultiDict(
+                {
+                    "foo": "bar",
+                    "accept": "some-value",
+                    "CONTENT-TYPE": "application/json",
+                }
+            ),
+        ),
+        type_="text/html",
+    ).headers() == CIMultiDict(
+        {"foo": "bar", "accept": "some-value", "content-type": "text/html"}
+    )
+
+
+@pytest.mark.asyncio
 async def test_rs_with_type_headers_charset():
     assert await RsWithType(
         RsFake(
