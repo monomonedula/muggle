@@ -2,8 +2,6 @@ import pytest
 from multidict import CIMultiDict
 
 from muggle.rs.rs_fake import RsFake
-from muggle.rs.rs_text import RsText
-from muggle.rs.rs_with_header import RsWithHeaders
 from muggle.rs.rs_with_status import RsWithStatus
 
 
