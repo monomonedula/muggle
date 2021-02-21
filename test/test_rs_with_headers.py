@@ -29,3 +29,21 @@ async def test_rs_with_headers_case_insensitive():
     ).headers()
     assert headers.getall("foo") == headers.getall("Foo") == ["bar", "baz"]
     assert headers.getall("accept") == headers.getall("ACCEPT") == ["some-value"]
+
+
+@pytest.mark.asyncio
+async def test_rs_with_headers_headers_value():
+    assert (
+        sorted(
+            (
+                await RsWithHeaders(
+                    RsFake(
+                        "200 OK",
+                        CIMultiDict({"foo": "bar", "accept": "some-value"}),
+                    ),
+                    {"foo": "baz"},
+                ).headers()
+            ).items()
+        )
+        == [("accept", "some-value"), ("foo", "bar"), ("foo", "baz")]
+    )
