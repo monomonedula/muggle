@@ -9,7 +9,7 @@ install:
   - poetry install
 script:
   - black --check -v muggle/ test/
-  - flake8 --ignore E501 muggle/ test/
+  - flake8 --ignore E501,W503 muggle/ test/
   - mypy .
   - pytest --cov muggle/ --cov-report xml
 after_success:
