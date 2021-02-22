@@ -29,7 +29,7 @@ class TextBody(Body):
 
         else:
             raise TypeError("Expected Union[str, bytes, TextIO] got %r" % type(text))
-        self._body = body
+        self._body: Callable[[], bytes] = body
 
     async def body(self) -> AsyncIterator[bytes]:
         yield self._body()
