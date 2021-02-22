@@ -31,5 +31,4 @@ async def test_text_body_from_iteration_reread(s: Union[str, bytes]):
 async def test_text_body_from_iteration_reread_text_io():
     body = TextBody(StringIO("Test string 1"))
     assert await body.body().__anext__() == b"Test string 1"
-    with pytest.raises(ValueError):
-        await body.body().__anext__()
+    assert await body.body().__anext__() == b""

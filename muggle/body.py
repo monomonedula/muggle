@@ -25,7 +25,7 @@ class TextBody(Body):
         elif isinstance(text, io.TextIOBase):
 
             def body() -> bytes:
-                return BytesIOWrapper(text).read()
+                return cast(io.TextIOBase, text).read().encode()
 
         else:
             raise TypeError("Expected Union[str, bytes, TextIO] got %r" % type(text))
