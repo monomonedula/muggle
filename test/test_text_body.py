@@ -39,5 +39,6 @@ async def test_text_body_from_bad_type():
     class Foo:
         def read(self):
             return ""
+
     with pytest.raises(TypeError):
-        TextBody(Foo())     # type: ignore
+        TextBody(Foo())  # type: ignore
