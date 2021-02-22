@@ -32,3 +32,12 @@ async def test_text_body_from_iteration_reread_text_io():
     body = TextBody(StringIO("Test string 1"))
     assert await body.body().__anext__() == b"Test string 1"
     assert await body.body().__anext__() == b""
+
+
+@pytest.mark.asyncio
+async def test_text_body_from_bad_type():
+    class Foo:
+        def read(self):
+            return ""
+    with pytest.raises(TypeError):
+        TextBody(Foo())     # type: ignore
