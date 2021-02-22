@@ -1,6 +1,6 @@
 import io
 from abc import ABC, abstractmethod
-from typing import TextIO, Union, BinaryIO, AsyncIterator, Callable, cast
+from typing import TextIO, Union, AsyncIterator, Callable, cast, IO
 
 
 class Body(ABC):
@@ -36,8 +36,8 @@ class TextBody(Body):
 
 
 class BinaryBody(Body):
-    def __init__(self, body: BinaryIO):
-        self._body = body
+    def __init__(self, body: IO[bytes]):
+        self._body: IO[bytes] = body
 
     async def body(self) -> AsyncIterator[bytes]:
         yield self._body.read()
