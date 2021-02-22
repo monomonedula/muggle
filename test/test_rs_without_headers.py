@@ -30,3 +30,27 @@ async def test_rs_without_headers_case_insensitive():
     assert headers["foo"] == headers["Foo"] == "bar"
     assert "accept" not in headers
     assert "Accept" not in headers
+
+
+@pytest.mark.asyncio
+async def test_rs_without_headers_headers():
+    assert (
+        sorted(
+            (
+                await RsWithoutHeaders(
+                    RsFake(
+                        status="200 OK",
+                        headers=CIMultiDict(
+                            {
+                                "Accept": "Some-Value",
+                                "Hello": "Another-Value",
+                                "Foo": "Bar",
+                            }
+                        ),
+                    ),
+                    ["Hello", "Accept", "Missing"],
+                ).headers()
+            ).items()
+        )
+        == [("Foo", "Bar")]
+    )
